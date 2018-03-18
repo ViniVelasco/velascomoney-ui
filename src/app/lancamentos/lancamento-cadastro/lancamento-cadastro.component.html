@@ -1,0 +1,89 @@
+<div class="container">
+  <form #novoLancamento="ngForm" autocomplete="off" (ngSubmit)="salvar(novoLancamento)">
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <h1>{{ editando ? 'Edição de' : 'Novo'}} Lançamento</h1>
+      </div>
+
+      <div class="ui-g-12">
+        <p-selectButton [options]="tipos" #tipo name="tipo"
+          [(ngModel)]="lancamento.tipo"></p-selectButton>
+      </div>
+
+      <div class="ui-g-6 ui-md-3 ui-fluid">
+        <label>Vencimento</label>
+        <p-calendar dateFormat="dd/mm/yy"
+         [readonlyInput]="false" [showIcon]="false"
+         [(ngModel)]="lancamento.dataVencimento"
+         ngModel name="vencimento" #vencimento="ngModel" required></p-calendar>
+
+         <app-message [control]="vencimento" error="required"
+          text="Informe o vencimento"></app-message>
+      </div>
+
+      <div class="ui-g-6 ui-md-3 ui-fluid">
+        <label>{{ tipo.value === 'RECEITA' ? 'Recebimento' : 'Pagamento' }}</label>
+        <p-calendar dateFormat="dd/mm/yy" name="receita" ngModel #receita="ngModel"
+          [(ngModel)]="lancamento.dataPagamento"></p-calendar>
+      </div>
+
+      <div class="ui-g-12 ui-md-9 ui-fluid">
+        <label>Descrição</label>
+        <input pInputText type="text" name="descricao"
+         ngModel #descricao="ngModel" required minlength="5"
+         [(ngModel)]="lancamento.descricao">
+
+         <app-message [control]="descricao" error="required"
+          text="Informe uma descrição"></app-message>
+
+         <app-message [control]="descricao" error="minlength"
+          text="Mínimo de {{ descricao.errors?.minlength?.requiredLength }} caracteres."></app-message>
+
+      </div>
+
+      <div class="ui-g-12 ui-md-3 ui-fluid">
+        <label>Valor</label>
+        <input pInputText type="text" placeholder="0,00" currencyMask
+          [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false}" name="valor"
+          ngModel #valor="ngModel" required
+          [(ngModel)]="lancamento.valor">
+
+        <app-message [control]="valor" error="required"
+          text="Informe o valor"></app-message>
+      </div>
+
+      <div class="ui-g-6 ui-fluid">
+        <label>Categoria</label>
+        <p-dropdown [options]="categorias"
+          [autoWidth]="false" placeholder="Selecione" #categoria name="categoria"
+          ngModel #categoria="ngModel" required
+          [(ngModel)]="lancamento.categoria.codigo"></p-dropdown>
+      </div>
+
+      <div class="ui-g-6 ui-fluid">
+        <label>Pessoa</label>
+        <p-dropdown [options]="pessoas"
+         [autoWidth]="false" placeholder="Selecione" [filter]="true" #pessoa ngModel
+         name="pessoa" #pessoa="ngModel" required
+         [(ngModel)]="lancamento.pessoa.codigo"></p-dropdown>
+      </div>
+
+      <div class="ui-g-12 ui-fluid">
+        <label>Observação</label>
+        <textarea pInputTextarea rows="3" name="observacao" ngModel #observacao="ngModel"
+        [(ngModel)]="lancamento.observacao"></textarea>
+      </div>
+
+      <div>
+        <div class="ui-g-12">
+            <button  pButton type="submit" label="Salvar" [disabled]="novoLancamento.invalid"></button>
+            <button pButton type="button" label="Novo" class="ui-button-info"
+              (click)="novo(novoLancamento)"></button>
+            <a routerLink="/lancamentos">Voltar para a pesquisa</a>
+          </div>
+      </div>
+    </div>
+
+  </form>
+</div>

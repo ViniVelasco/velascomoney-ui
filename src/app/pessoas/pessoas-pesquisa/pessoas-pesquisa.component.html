@@ -1,0 +1,51 @@
+<div class="container">
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <h1>Pessoas</h1>
+    </div>
+
+    <form autocomplete="off">
+      <div class="ui-g-12 ui-fluid">
+        <label>Nome</label>
+        <input type="text" pInputText name="nome" [(ngModel)]="filtro.nome">
+      </div>
+
+      <div class="ui-g-12">
+        <button pButton type="submit" label="Pesquisar" (click)="pesquisar()"></button>
+      </div>
+    </form>
+  </div>
+
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <p-dataTable [value]="pessoas" [responsive]="true" [paginator]="true" [rows]="filtro.itensPorPagina"
+        emptyMessage="Nenhuma pessoa encontrado."
+        [lazy]="true" [totalRecords]="totalRegistros" (onLazyLoad)="aoMudarPagina($event)"
+        #tabelaPessoas>
+        <p-column field="nome" header="Nome"></p-column>
+        <p-column field="endereco.cidade" header="Cidade"></p-column>
+        <p-column field="endereco.estado" header="Estado"></p-column>
+        <p-column field="ativo" header="Status">
+            <ng-template let-pes="rowData" pTemplate="body" let-pessoa="rowData">
+                <a href="javascript:;" [pTooltip]="pes.ativo ? 'Desativar' : 'Ativar'"
+                    tooltipPosition="top" (click)="mudarStatus(pessoa)">
+                  {{ pes.ativo ? 'Ativo' : 'Inativo' }}
+                </a>
+              </ng-template>
+        </p-column>
+        <p-column styleClass="col-acoes">
+            <ng-template pTemplate="body" let-pessoa="rowData">
+                <button pButton icon="fa-pencil" pTooltip="Editar" tooltipPosition="top"
+                [routerLink]="['/pessoas', pessoa.codigo]"></button>
+                <button pButton icon="fa-trash" pTooltip="Excluir" tooltipPosition="top"
+                  (click)="confirmarExclusao(pessoa)"></button>
+            </ng-template>
+        </p-column>
+      </p-dataTable>
+    </div>
+  </div>
+
+  <div class="ui-g-12">
+      <a pButton label="Nova Pessoa" routerLink="/pessoas/novo"></a>
+    </div>
+</div>

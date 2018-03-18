@@ -1,0 +1,71 @@
+<div class="container">
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <h1>Lançamentos</h1>
+      </div>
+
+      <form autocomplete="off" (ngSubmit)="pesquisar()">
+
+        <div class="ui-g-12 ui-fluid">
+          <label>Descrição</label>
+          <input type="text" pInputText name="descricao" ngModel [(ngModel)]="filtro.descricao">
+        </div>
+
+        <div class="ui-g-12">
+          <label style="display: block">Vencimento</label>
+          <p-calendar dateFormat="dd/mm/yyyy" [inputStyle]="{ width: '95px' }"
+           name="vencimentoInicio" [(ngModel)]="filtro.dataVencimentoInicio"></p-calendar>
+
+          <label>até</label>
+          <p-calendar dateFormat="dd/mm/yyyy" [inputStyle]="{ width: '95px' }"
+           name="vencimentoFim" [(ngModel)]="filtro.dataVencimentoFim"></p-calendar>
+        </div>
+
+        <div class="ui-g-12">
+          <button pButton type="submit" label="Pesquisar"></button>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <p-dataTable [value]="lancamentos" [responsive]="true"
+          emptyMessage="Nenhum lançamento encontrado." [paginator]="true" [rows]="filtro.itensPorPagina"
+          [lazy]="true" [totalRecords]="totalRegistros" (onLazyLoad)="aoMudarPagina($event)"
+          #tabelaLancamentos>
+          <p-column field="pessoa" header="Pessoa"></p-column>
+            <p-column field="descricao" header="Descrição"></p-column>
+              <p-column field="dataVencimento" header="Vencimento" styleClass="col-data">
+                <ng-template let-lanc="rowData" pTemplate="body">
+                  {{lanc.dataVencimento | date:'dd/MM/y' }}
+                </ng-template>
+            </p-column>
+            <p-column field="dataPagamento" header="Pagamento" styleClass="col-data">
+              <ng-template let-lanc="rowData" pTemplate="body">
+                {{lanc.dataPagamento | date:'dd/MM/y' }}
+              </ng-template>
+            </p-column>
+            <p-column field="valor" header="Valor" styleClass="col-valor">
+              <ng-template let-lanc="rowData" pTemplate="body">
+                <span [style.color]="lanc.tipo === 'DESPESA' ? 'red' : 'blue'">{{lanc.valor | number:'1.2-2'}}</span>
+              </ng-template>
+            </p-column>
+            <p-column styleClass="col-acoes">
+              <ng-template let-lanc="rowData" pTemplate="body">
+                <button pButton icon="fa-pencil" pTooltip="Editar" tooltipPosition="top"
+                 [routerLink]="['/lancamentos', lanc.codigo]"></button>
+                <button pButton icon="fa-trash" pTooltip="Excluir" tooltipPosition="top"
+                 (click)="confirmarExclusao(lanc)"
+                 [disabled]="!auth.possuiPermissao('ROLE_REMOVER_LANCAMENTO')"></button>
+             </ng-template>
+            </p-column>
+        </p-dataTable>
+      </div>
+    </div>
+
+    <div class="ui-g-12">
+      <a pButton label="Novo Lançamento" routerLink="/lancamentos/novo"></a>
+    </div>
+</div>
+
